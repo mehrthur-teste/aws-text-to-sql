@@ -1,0 +1,1111 @@
+{
+ "Metadata": {
+  "cdk_nag": {
+   "rules_to_suppress": [
+    {
+     "reason": "Required wildcards are scoped to specific resources and service integrations",
+     "id": "AwsSolutions-IAM5"
+    }
+   ]
+  }
+ },
+ "Resources": {
+  "LambdaPowertoolsLayer733361E9": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "CompatibleRuntimes": [
+     "python3.13"
+    ],
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "295a4c654b126da6759d7e00dba54f9b4a0023d0c96ddf915bdfecb7500d89aa.zip"
+    },
+    "Description": "Lambda Powertools for Python"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/LambdaPowertoolsLayer/Resource",
+    "aws:asset:path": "asset.295a4c654b126da6759d7e00dba54f9b4a0023d0c96ddf915bdfecb7500d89aa",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "PydanticLayer850E8E7B": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "CompatibleRuntimes": [
+     "python3.13"
+    ],
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "1315f8c21c83150b8fa1f8519513978cb7d8cb8ce6e3f33487267fcf4a8f23dc.zip"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/PydanticLayer/Resource",
+    "aws:asset:path": "asset.1315f8c21c83150b8fa1f8519513978cb7d8cb8ce6e3f33487267fcf4a8f23dc",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "AthenaCommonLayerE6CEB8DD": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "CompatibleRuntimes": [
+     "python3.13"
+    ],
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "06732bcc67b92ba0f5abdcbcbd19427968c6c97e98a954eb2940051eccee4425.zip"
+    },
+    "Description": "Common utilities for Athena operations"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/AthenaCommonLayer/Resource",
+    "aws:asset:path": "asset.06732bcc67b92ba0f5abdcbcbd19427968c6c97e98a954eb2940051eccee4425",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DynamicAgentRoleA8887E39": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Condition": {
+        "StringEquals": {
+         "aws:SourceAccount": "046162611733"
+        },
+        "ArnLike": {
+         "aws:SourceArn": "arn:aws:bedrock:us-east-1:046162611733:agent/*"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "bedrock.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "RoleName": "AmazonBedrockExecutionRoleForAgents_AwsText2SqnamicAgentC441E982"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/DynamicAgent/Role/Resource"
+   }
+  },
+  "DynamicAgentRoleDefaultPolicyB78B529B": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "bedrock:InvokeModel",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":bedrock:*::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "bedrock:GetInferenceProfile",
+        "bedrock:InvokeModel"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":bedrock:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":inference-profile/us.anthropic.claude-3-5-sonnet-20241022-v2:0"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "AthenaQueryLambda5FEAA2E2",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "AthenaSchemaReaderLambda7F1C5EBE",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "AthenaQueryLambda5FEAA2E2",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "AthenaSchemaReaderLambda7F1C5EBE",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "DynamicAgentRoleDefaultPolicyB78B529B",
+    "Roles": [
+     {
+      "Ref": "DynamicAgentRoleA8887E39"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/DynamicAgent/Role/DefaultPolicy/Resource"
+   }
+  },
+  "DynamicAgentAgentResourceECEA3023": {
+   "Type": "AWS::Bedrock::Agent",
+   "Properties": {
+    "ActionGroups": [
+     {
+      "ActionGroupName": "UserInputAction",
+      "ActionGroupState": "ENABLED",
+      "ParentActionGroupSignature": "AMAZON.UserInput",
+      "SkipResourceInUseCheckOnDelete": false
+     },
+     {
+      "ActionGroupName": "CodeInterpreterAction",
+      "ActionGroupState": "ENABLED",
+      "ParentActionGroupSignature": "AMAZON.CodeInterpreter",
+      "SkipResourceInUseCheckOnDelete": false
+     },
+     {
+      "ActionGroupExecutor": {
+       "Lambda": {
+        "Fn::GetAtt": [
+         "AthenaQueryLambda5FEAA2E2",
+         "Arn"
+        ]
+       }
+      },
+      "ActionGroupName": "AthenaQueryActionGroup",
+      "ActionGroupState": "ENABLED",
+      "ApiSchema": {
+       "Payload": "{\n    \"openapi\": \"3.0.1\",\n    \"info\": {\n      \"title\": \"AthenaQuery API\",\n      \"description\": \"API for querying data from an Athena database\",\n      \"version\": \"1.0.0\"\n    },\n    \"paths\": {\n      \"/athena_query\": {\n        \"post\": {\n          \"operationId\": \"athena_query\",\n          \"description\": \"Execute a query on an Athena database\",\n          \"requestBody\": {\n            \"description\": \"Athena query details\",\n            \"required\": true,\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"query\": {\n                      \"type\": \"string\",\n                      \"description\": \"SQL Query\"\n                    }\n                  }\n                }\n              }\n            }\n          },\n          \"responses\": {\n            \"200\": {\n              \"description\": \"Successful response with query results\",\n              \"content\": {\n                \"application/json\": {\n                  \"schema\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                      \"ResultSet\": {\n                        \"type\": \"array\",\n                        \"items\": {\n                          \"type\": \"object\",\n                          \"description\": \"A single row of query results\"\n                        },\n                        \"description\": \"Results returned by the query\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"default\": {\n              \"description\": \"Error response\",\n              \"content\": {\n                \"application/json\": {\n                  \"schema\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                      \"message\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }"
+      },
+      "Description": "This action group is used to query information about data",
+      "SkipResourceInUseCheckOnDelete": false
+     },
+     {
+      "ActionGroupExecutor": {
+       "Lambda": {
+        "Fn::GetAtt": [
+         "AthenaSchemaReaderLambda7F1C5EBE",
+         "Arn"
+        ]
+       }
+      },
+      "ActionGroupName": "AthenaSchemaReaderActionGroup",
+      "ActionGroupState": "ENABLED",
+      "ApiSchema": {
+       "Payload": "{\n    \"openapi\": \"3.0.1\",\n    \"info\": {\n      \"title\": \"AthenaSchemaReader API\",\n      \"description\": \"API for reading schemas from an Athena database\",\n      \"version\": \"1.0.0\"\n    },\n    \"paths\": {\n      \"/list_tables\": {\n        \"post\": {\n          \"operationId\": \"list_tables\",\n          \"description\": \"Retrieve a list of all tables in the specified database\",\n          \"requestBody\": {\n            \"description\": \"Database information to list tables\",\n            \"required\": true,\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"database\": {\n                      \"type\": \"string\",\n                      \"description\": \"Name of the database to list its tables\"\n                    }\n                  }\n                }\n              }\n            }\n          },\n          \"responses\": {\n            \"200\": {\n              \"description\": \"Successful response with show tables results\",\n              \"content\": {\n                \"application/json\": {\n                  \"schema\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                      \"ResultSet\": {\n                        \"type\": \"array\",\n                        \"items\": {\n                          \"type\": \"object\",\n                          \"description\": \"A single row of query results\"\n                        },\n                        \"description\": \"Results returned by the query\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"default\": {\n              \"description\": \"Error response\",\n              \"content\": {\n                \"application/json\": {\n                  \"schema\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                      \"message\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            }\n          }\n        }\n      },\n      \"/describe_table\": {\n        \"post\": {\n          \"operationId\": \"describe_table\",\n          \"description\": \"Retrieve detailed column information (name, type, comment) for a specific table\",\n          \"requestBody\": {\n            \"description\": \"Database and table information to get schema details\",\n            \"required\": true,\n            \"content\": {\n              \"application/json\": {\n                \"schema\": {\n                  \"type\": \"object\",\n                  \"properties\": {\n                    \"database\": {\n                      \"type\": \"string\",\n                      \"description\": \"Name of the database containing the target table\"\n                    },\n                    \"table\": {\n                      \"type\": \"string\",\n                      \"description\": \"Name of the table to retrieve schema information\"\n                    }\n                  }\n                }\n              }\n            }\n          },\n          \"responses\": {\n            \"200\": {\n              \"description\": \"Successful response with show create table results\",\n              \"content\": {\n                \"application/json\": {\n                  \"schema\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                      \"ResultSet\": {\n                        \"type\": \"array\",\n                        \"items\": {\n                          \"type\": \"object\",\n                          \"description\": \"A single row of query results\"\n                        },\n                        \"description\": \"Results returned by the query\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"default\": {\n              \"description\": \"Error response\",\n              \"content\": {\n                \"application/json\": {\n                  \"schema\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                      \"message\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }"
+      },
+      "Description": "This action group is used to read schema from Athena",
+      "SkipResourceInUseCheckOnDelete": false
+     }
+    ],
+    "AgentName": "AwsText2Sql-AgentStack-DynamicAgent",
+    "AgentResourceRoleArn": {
+     "Fn::GetAtt": [
+      "DynamicAgentRoleA8887E39",
+      "Arn"
+     ]
+    },
+    "AutoPrepare": true,
+    "FoundationModel": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":bedrock:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":inference-profile/us.anthropic.claude-3-5-sonnet-20241022-v2:0"
+      ]
+     ]
+    },
+    "IdleSessionTTLInSeconds": 3600,
+    "Instruction": "You are undefined, a SQL analyst AI created specifically for undefined. If Human says Hello, Greet the human with your name. \n1. Query Analysis:\n    - Understand the user's main objective\n    - Break down into sub-queries if necessary\n    - Identify potential variations in user input (e.g., 'Korea', 'South Korea', 'Republic of Korea')\n\n2. Schema Discovery:\n    - Use /list_tables endpoint to identify available tables in the database\n    - Use /describe_table endpoint to get detailed schema information for specific tables\n    - Always use the most recent and relevant table schemas, as the database structure may change frequently\n    - Before constructing queries, ensure you have up-to-date schema information\n\n3. Database and Table Usage:\n   - IMPORTANT: Always use the 'fraud_data' database for all queries. Do not use any other database.\n     Correct: SELECT * FROM fraud_data.accounts\n     Incorrect: SELECT * FROM default.accounts\n     Incorrect: SELECT * FROM accounts\n   - Always use fully qualified table names with the 'fraud_data' database prefix\n     Correct: SELECT column1, column2 FROM fraud_data.table_name\n     Incorrect: SELECT column1, column2 FROM table_name\n   - The following tables are available in the fraud_data database:\n     accounts, bank_branches, card_transactions, cards, customers, devices,\n     fraud_alerts, locations, merchants, rules_engine, suspicious_patterns,\n     transaction_history, transaction\n   - Any attempt to query tables not in this list or in other databases will fail\n\n4. Query Optimization Techniques:\n   - Implement flexible matching:\n     - Anticipate and account for synonyms or alternative phrasings in user requests\n     - LOWER() for case-insensitive matching\n     - '%' wildcards for variations\n     Example: WHERE LOWER(country) LIKE LOWER('%korea%')\n   - Use proper TIMESTAMP format\n     Example: WHERE datetime BETWEEN TIMESTAMP '2024-01-01 00:00:00' AND '2024-01-31 23:59:59'\n   - For efficient results, use aggregate functions:\n     - COUNT() - for counting records\n     - SUM() - for totaling values\n     - AVG() - for averaging values\n   - Use subqueries/CASE statements when needed\n\n5. Amazon Athena SQL Considerations:\n   - Amazon Athena's SQL dialect is based on Presto and complies with ANSI SQL\n   - Use standard SQL functions and operators supported by Athena\n   - Be aware that Athena does not support stored procedures or user-defined functions\n   - Remember that Athena is case-insensitive for SQL statements but case-sensitive for string comparisons\n   - Utilize Athena's support for complex data types like arrays and structs when appropriate\n   - Consider using Athena's geospatial functions if dealing with geographic data\n   - Be mindful of Athena's limitations on certain operations, such as UPDATE or DELETE statements\n   - Optimize queries for performance, considering Athena's distributed query execution model\n\n6. Execution and Error Handling:\n   - Execute the query via the /athena_query endpoint\n   - If the execution fails, carefully analyze the error message and hint provided by the Lambda function\n   - Based on the error type received from the Lambda function, take appropriate action:\n     * MISSING_PROPERTIES: Review the API request and ensure all required parameters are included\n     * MISSING_QUERY: Verify that you've generated and included a SQL query in the request\n     * MISSING_DATABASE_NAME: Add the database name to your query or in the request parameters\n     * MISSING_TABLE_NAME: Include the specific table name in your query or request parameters\n     * QUERY_EXECUTION_FAILED: Check and correct the use of fully qualified table names (e.g., fraud_data.customers)\n     * QUERY_RESULT_ERROR: Review and correct table and column names, considering potential permission issues\n     * INVALID_API_PATH_SCHEMA: Ensure you're using the correct API endpoint for schema-related operations\n     * INVALID_API_PATH_QUERY: Confirm you're using the /athena_query endpoint for query execution\n     * INTERNAL_ERROR: Prepare to retry the query or suggest the user contact support if the issue persists\n   - After identifying the issue based on the error message and hint:\n     1. Modify your query or API request to address the specific problem\n     2. If needed, use schema discovery tools (/list_tables, /describe_table) to gather updated information\n     3. Reconstruct the query with the necessary corrections\n     4. Retry the execution with the modified query or request\n   - If errors persist after multiple attempts:\n     1. Explain the issue to the user in clear, non-technical language\n     2. Provide details on what has been tried and why it might be failing\n     3. If appropriate, suggest alternative approaches or ask for more information from the user\n\nAlways include the generated SQL query, execution results, and a clear explanation of the logic and findings in your response.\nIf an error occurs, provide the specific error message and hint from the predefined error types. If multiple queries are needed to fulfill a request, explain the process and results of each step.\n\nRemember:\n- Use schema discovery tools (/list_tables, /describe_table) before constructing queries\n- Use fully qualified table names (e.g., fraud_data.customers)\n- Available API endpoints: /athena_query, /describe_table, /list_tables\n- The database structure may change frequently, always use the most up-to-date schema information\n- Always consider data security and access permissions when executing queries\n\nSample Questions and Queries:\n\nQuestion: \"Retrieve all transactions for a specific customer within a date range, including fraud flags and merchant details\"\nQuery: SELECT t.transaction_id, t.transaction_type, t.amount, t.transaction_date, t.fraud_flag, m.merchant_name, m.category\n       FROM transactions t\n       JOIN accounts a ON t.account_id = a.account_id\n       JOIN customers c ON a.customer_id = c.customer_id\n       JOIN merchants m ON t.merchant_id = m.merchant_id\n       WHERE c.first_name = 'John'\n       AND c.last_name = 'Doe'\n       AND t.transaction_date BETWEEN '2023-01-01' AND '2023-12-31';\n\nQuestion: \"Identify all customers who have had more than 3 fraud alerts in the last 6 months\"\nQuery: SELECT c.customer_id, c.first_name, c.last_name, COUNT(fa.alert_id) AS fraud_alert_count\n       FROM customers c\n       JOIN accounts a ON c.customer_id = a.customer_id\n       JOIN transactions t ON a.account_id = t.account_id\n       JOIN fraud_alerts fa ON t.transaction_id = fa.transaction_id\n       WHERE fa.alert_date BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 6 MONTH) AND CURRENT_DATE\n       GROUP BY c.customer_id, c.first_name, c.last_name\n       HAVING COUNT(fa.alert_id) > 3;\n\nQuestion: \"Find all transactions that occurred in a specific country and were flagged as fraudulent, along with the device information used for those transactions\"\nQuery: SELECT t.transaction_id, t.transaction_type, t.amount, t.transaction_date,\n              d.device_id, d.device_type, d.device_os, d.device_model\n       FROM transactions t\n       JOIN locations l ON t.transaction_id = l.transaction_id\n       JOIN devices d ON t.account_id = d.customer_id\n       WHERE l.country = 'United States'\n       AND t.fraud_flag = 'true';",
+    "SkipResourceInUseCheckOnDelete": false
+   },
+   "DependsOn": [
+    "DynamicAgentRoleDefaultPolicyB78B529B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/DynamicAgent/AgentResource"
+   }
+  },
+  "AthenaSchemaReaderRole40751020": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/AthenaSchemaReaderRole/Resource"
+   }
+  },
+  "AthenaSchemaReaderRoleDefaultPolicyCC69F327": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:logs:us-east-1:046162611733:log-group:*"
+      },
+      {
+       "Action": [
+        "athena:GetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:StartQueryExecution"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:athena:us-east-1:046162611733:workgroup/primary"
+      },
+      {
+       "Action": [
+        "glue:GetDatabase",
+        "glue:GetPartitions",
+        "glue:GetTable",
+        "glue:GetTables"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        "arn:aws:glue:us-east-1:046162611733:catalog",
+        "arn:aws:glue:us-east-1:046162611733:database/default",
+        "arn:aws:glue:us-east-1:046162611733:database/fraud_data",
+        "arn:aws:glue:us-east-1:046162611733:table/default/fraud_data",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/accounts",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/bank_branches",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/card_transactions",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/cards",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/customers",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/devices",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/fraud_alerts",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/locations",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/merchants",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/rules_engine",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/suspicious_patterns",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/transaction_history",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/transactions"
+       ]
+      },
+      {
+       "Action": [
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:PutObject"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+        },
+        {
+         "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaOutputBucket826361EDArn1256CED7"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/accounts/accounts.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/bank_branches/bank_branches.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/card_transactions/card_transactions.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/cards/cards.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/customers/customers.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/devices/devices.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/fraud_alerts/fraud_alerts.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/locations/locations.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/merchants/merchants.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/rules_engine/rules_engine.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/suspicious_patterns/suspicious_patterns.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/transaction_history/transaction_history.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/transactions/transactions.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaOutputBucket826361EDArn1256CED7"
+           },
+           "/query-results/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AthenaSchemaReaderRoleDefaultPolicyCC69F327",
+    "Roles": [
+     {
+      "Ref": "AthenaSchemaReaderRole40751020"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/AthenaSchemaReaderRole/DefaultPolicy/Resource"
+   }
+  },
+  "AthenaSchemaReaderLambda7F1C5EBE": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "8595a5516a1fd49b60146b8158842f7876dba77622517d465f715e1b9e98832f.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "S3_OUTPUT": {
+       "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputRefAthenaOutputBucket826361ED1BD1E59B"
+      },
+      "S3_DATA_BUCKET": {
+       "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputRefAthenaDataBucketAE80E99189B3BFB1"
+      }
+     }
+    },
+    "FunctionName": "athena_schema_reader-AwsText2Sql-AgentStack",
+    "Handler": "athena_schema_reader.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "AthenaCommonLayerE6CEB8DD"
+     },
+     {
+      "Ref": "LambdaPowertoolsLayer733361E9"
+     },
+     {
+      "Ref": "PydanticLayer850E8E7B"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "AthenaSchemaReaderRole40751020",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.13",
+    "Timeout": 300
+   },
+   "DependsOn": [
+    "AthenaSchemaReaderRoleDefaultPolicyCC69F327",
+    "AthenaSchemaReaderRole40751020"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/AthenaSchemaReaderLambda/Resource",
+    "aws:asset:path": "asset.8595a5516a1fd49b60146b8158842f7876dba77622517d465f715e1b9e98832f",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AthenaSchemaReaderLambdaLambdaInvocationPolicyc879dabbc25bda4c79E221F9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AthenaSchemaReaderLambda7F1C5EBE",
+      "Arn"
+     ]
+    },
+    "Principal": "bedrock.amazonaws.com",
+    "SourceAccount": "046162611733",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "DynamicAgentAgentResourceECEA3023",
+      "AgentArn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/AthenaSchemaReaderLambda/LambdaInvocationPolicy-c879dabbc25bda4c"
+   }
+  },
+  "AthenaQueryLambdaDLQ40E6C2A1": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "QueueName": "AthenaQueryLambdaDLQs-Fraud-046162611733-us-east-1",
+    "SqsManagedSseEnabled": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/AthenaQueryLambdaDLQ/Resource"
+   }
+  },
+  "AthenaQueryLambdaDLQPolicyA676F13C": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "AthenaQueryLambdaDLQ40E6C2A1",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "AthenaQueryLambdaDLQ40E6C2A1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/AthenaQueryLambdaDLQ/Policy/Resource"
+   }
+  },
+  "AthenaQueryLambdaRoleE7B101EC": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/AthenaQueryLambdaRole/Resource"
+   }
+  },
+  "AthenaQueryLambdaRoleDefaultPolicyAD553054": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:logs:us-east-1:046162611733:log-group:*"
+      },
+      {
+       "Action": [
+        "athena:GetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:StartQueryExecution"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:athena:us-east-1:046162611733:workgroup/primary"
+      },
+      {
+       "Action": [
+        "glue:GetDatabase",
+        "glue:GetPartitions",
+        "glue:GetTable",
+        "glue:GetTables"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        "arn:aws:glue:us-east-1:046162611733:catalog",
+        "arn:aws:glue:us-east-1:046162611733:database/default",
+        "arn:aws:glue:us-east-1:046162611733:database/fraud_data",
+        "arn:aws:glue:us-east-1:046162611733:table/default/fraud_data",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/accounts",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/bank_branches",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/card_transactions",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/cards",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/customers",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/devices",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/fraud_alerts",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/locations",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/merchants",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/rules_engine",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/suspicious_patterns",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/transaction_history",
+        "arn:aws:glue:us-east-1:046162611733:table/fraud_data/transactions"
+       ]
+      },
+      {
+       "Action": [
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:PutObject"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+        },
+        {
+         "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaOutputBucket826361EDArn1256CED7"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/accounts/accounts.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/bank_branches/bank_branches.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/card_transactions/card_transactions.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/cards/cards.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/customers/customers.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/devices/devices.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/fraud_alerts/fraud_alerts.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/locations/locations.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/merchants/merchants.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/rules_engine/rules_engine.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/suspicious_patterns/suspicious_patterns.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/transaction_history/transaction_history.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/transactions/transactions.csv"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaOutputBucket826361EDArn1256CED7"
+           },
+           "/query-results/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "sqs:SendMessage",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "AthenaQueryLambdaDLQ40E6C2A1",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:Abort*",
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+        },
+        {
+         "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaOutputBucket826361EDArn1256CED7"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+           },
+           "/AwsText2Sql-AgentStack/AthenaSchemaReaderLambda"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaOutputBucket826361EDArn1256CED7"
+           },
+           "/AwsText2Sql-AgentStack/AthenaSchemaReaderLambda"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AthenaQueryLambdaRoleDefaultPolicyAD553054",
+    "Roles": [
+     {
+      "Ref": "AthenaQueryLambdaRoleE7B101EC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/AthenaQueryLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "AthenaQueryLambda5FEAA2E2": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "25ab0c4f2af408841d2923131b4238628f78c4d6c0f3e150acd4518419a57f55.zip"
+    },
+    "DeadLetterConfig": {
+     "TargetArn": {
+      "Fn::GetAtt": [
+       "AthenaQueryLambdaDLQ40E6C2A1",
+       "Arn"
+      ]
+     }
+    },
+    "Environment": {
+     "Variables": {
+      "S3_OUTPUT": {
+       "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputRefAthenaOutputBucket826361ED1BD1E59B"
+      },
+      "S3_DATA_BUCKET": {
+       "Fn::ImportValue": "AwsText2Sql-DbStack:ExportsOutputRefAthenaDataBucketAE80E99189B3BFB1"
+      }
+     }
+    },
+    "FunctionName": "athena_query-AwsText2Sql-AgentStack",
+    "Handler": "athena_query.lambda_handler",
+    "Layers": [
+     {
+      "Ref": "AthenaCommonLayerE6CEB8DD"
+     },
+     {
+      "Ref": "LambdaPowertoolsLayer733361E9"
+     },
+     {
+      "Ref": "PydanticLayer850E8E7B"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "AthenaQueryLambdaRoleE7B101EC",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.13",
+    "Timeout": 300
+   },
+   "DependsOn": [
+    "AthenaQueryLambdaRoleDefaultPolicyAD553054",
+    "AthenaQueryLambdaRoleE7B101EC"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/AthenaQueryLambda/Resource",
+    "aws:asset:path": "asset.25ab0c4f2af408841d2923131b4238628f78c4d6c0f3e150acd4518419a57f55",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AthenaQueryLambdaLambdaInvocationPolicyc879dabbc25bda4c477F3091": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AthenaQueryLambda5FEAA2E2",
+      "Arn"
+     ]
+    },
+    "Principal": "bedrock.amazonaws.com",
+    "SourceAccount": "046162611733",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "DynamicAgentAgentResourceECEA3023",
+      "AgentArn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/AthenaQueryLambda/LambdaInvocationPolicy-c879dabbc25bda4c"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WQT2/CMAzFP0vvqSlwmLjxR+K0AwNpV+SmpoSmCYsTEIry3aemoI2L33uxLeXnGUw/FhCrAu9cyqYrtaohHjzKTuCdj5HnR2Qmz7AaRPAc1kF25NfIJDT2dYMQNyfziQ9y3+RYWSPewuZktsFI//Q7cr3ioZOEwh7i3moaGll3Viv5yHPZJVFT46zsYHMyq5aMF/zDEL8Chbw1mlz/dv/FlET++cFjq0wr9sQ2OElJVCXq6xmhKpZP+smgI1N5ffizNc+RuMvpDWt8epGlJCqYwmwxL5ay6TTWPGnJkEOvblSiyteV1rB3QXqGF1YcoXJdaYU8HDYJYxuCC09uswqmC6iKCytVumC86gn2o/4CWN1cWL4BAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-AgentStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

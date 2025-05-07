@@ -1,0 +1,676 @@
+{
+  "version": "39.0.0",
+  "artifacts": {
+    "AwsText2Sql-DbStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "AwsText2Sql-DbStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "AwsText2Sql-DbStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://046162611733/us-east-1",
+      "properties": {
+        "templateFile": "AwsText2Sql-DbStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::046162611733:role/cdk-hnb659fds-deploy-role-046162611733-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::046162611733:role/cdk-hnb659fds-cfn-exec-role-046162611733-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-046162611733-us-east-1/335b13539e1121fe51ff0d7300ab72f25c0a2903137274f63cc03036c8d002ca.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "AwsText2Sql-DbStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::046162611733:role/cdk-hnb659fds-lookup-role-046162611733-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "AwsText2Sql-DbStack.assets"
+      ],
+      "metadata": {
+        "/AwsText2Sql-DbStack/AthenaDataBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaDataBucketAE80E991"
+          }
+        ],
+        "/AwsText2Sql-DbStack/AthenaDataBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaDataBucketPolicyFF2050A6"
+          }
+        ],
+        "/AwsText2Sql-DbStack/AthenaDataBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaDataBucketAutoDeleteObjectsCustomResourceCD085CF6"
+          }
+        ],
+        "/AwsText2Sql-DbStack/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/AwsText2Sql-DbStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/AwsText2Sql-DbStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/AwsText2Sql-DbStack/AthenaOutputBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaOutputBucket826361ED"
+          }
+        ],
+        "/AwsText2Sql-DbStack/AthenaOutputBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaOutputBucketPolicyFC31EEB8"
+          }
+        ],
+        "/AwsText2Sql-DbStack/AthenaOutputBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaOutputBucketAutoDeleteObjectsCustomResource6478248F"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeployaccountsSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployaccountsSampleTableAwsCliLayer6190E2AE"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeployaccountsSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployaccountsSampleTableCustomResourceA510AE91"
+          }
+        ],
+        "/AwsText2Sql-DbStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          }
+        ],
+        "/AwsText2Sql-DbStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+          }
+        ],
+        "/AwsText2Sql-DbStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF"
+          }
+        ],
+        "/AwsText2Sql-DbStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploybankbranchesSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploybankbranchesSampleTableAwsCliLayerC73A46B8"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploybankbranchesSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploybankbranchesSampleTableCustomResource58F7527E"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploycardtransactionsSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploycardtransactionsSampleTableAwsCliLayerEBC64C2A"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploycardtransactionsSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploycardtransactionsSampleTableCustomResource063E38B6"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploycardsSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploycardsSampleTableAwsCliLayerE864F1E0"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploycardsSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploycardsSampleTableCustomResource6AF9105C"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploycustomersSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploycustomersSampleTableAwsCliLayerC96C80E1"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploycustomersSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploycustomersSampleTableCustomResourceB8CBDF12"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploydevicesSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploydevicesSampleTableAwsCliLayer0B496197"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploydevicesSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploydevicesSampleTableCustomResource53B92A2E"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeployfraudalertsSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployfraudalertsSampleTableAwsCliLayer13A01418"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeployfraudalertsSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployfraudalertsSampleTableCustomResource4D7C86AB"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploylocationsSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploylocationsSampleTableAwsCliLayerBF6DFFC8"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploylocationsSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploylocationsSampleTableCustomResource6F954DC5"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploymerchantsSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploymerchantsSampleTableAwsCliLayer392072C2"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploymerchantsSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploymerchantsSampleTableCustomResource3610B671"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeployrulesengineSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployrulesengineSampleTableAwsCliLayer2DF33BC0"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeployrulesengineSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployrulesengineSampleTableCustomResource6936D9B3"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploysuspiciouspatternsSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploysuspiciouspatternsSampleTableAwsCliLayerB751BB62"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploysuspiciouspatternsSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploysuspiciouspatternsSampleTableCustomResource8765498C"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploytransactionhistorySampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploytransactionhistorySampleTableAwsCliLayer77A13D7A"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploytransactionhistorySampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploytransactionhistorySampleTableCustomResource15EF7C98"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploytransactionsSampleTable/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploytransactionsSampleTableAwsCliLayer453DF68B"
+          }
+        ],
+        "/AwsText2Sql-DbStack/DeploytransactionsSampleTable/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploytransactionsSampleTableCustomResourceE6EE784E"
+          }
+        ],
+        "/AwsText2Sql-DbStack/AthenaDatabase": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaDatabase"
+          }
+        ],
+        "/AwsText2Sql-DbStack/customers": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "customers"
+          }
+        ],
+        "/AwsText2Sql-DbStack/accounts": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "accounts"
+          }
+        ],
+        "/AwsText2Sql-DbStack/transactions": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "transactions"
+          }
+        ],
+        "/AwsText2Sql-DbStack/merchants": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "merchants"
+          }
+        ],
+        "/AwsText2Sql-DbStack/fraud_alerts": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "fraudalerts"
+          }
+        ],
+        "/AwsText2Sql-DbStack/rules_engine": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "rulesengine"
+          }
+        ],
+        "/AwsText2Sql-DbStack/devices": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "devices"
+          }
+        ],
+        "/AwsText2Sql-DbStack/locations": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "locations"
+          }
+        ],
+        "/AwsText2Sql-DbStack/transaction_history": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "transactionhistory"
+          }
+        ],
+        "/AwsText2Sql-DbStack/suspicious_patterns": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "suspiciouspatterns"
+          }
+        ],
+        "/AwsText2Sql-DbStack/bank_branches": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "bankbranches"
+          }
+        ],
+        "/AwsText2Sql-DbStack/cards": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cards"
+          }
+        ],
+        "/AwsText2Sql-DbStack/card_transactions": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cardtransactions"
+          }
+        ],
+        "/AwsText2Sql-DbStack/AthenaDataBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaDataBucketName"
+          }
+        ],
+        "/AwsText2Sql-DbStack/AthenaOutputBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaOutputBucketName"
+          }
+        ],
+        "/AwsText2Sql-DbStack/AthenaDatabaseName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaDatabaseName"
+          }
+        ],
+        "/AwsText2Sql-DbStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/AwsText2Sql-DbStack/Exports/Output{\"Fn::GetAtt\":[\"AthenaDataBucketAE80E991\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+          }
+        ],
+        "/AwsText2Sql-DbStack/Exports/Output{\"Fn::GetAtt\":[\"AthenaOutputBucket826361ED\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttAthenaOutputBucket826361EDArn1256CED7"
+          }
+        ],
+        "/AwsText2Sql-DbStack/Exports/Output{\"Ref\":\"AthenaOutputBucket826361ED\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefAthenaOutputBucket826361ED1BD1E59B"
+          }
+        ],
+        "/AwsText2Sql-DbStack/Exports/Output{\"Ref\":\"AthenaDataBucketAE80E991\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefAthenaDataBucketAE80E99189B3BFB1"
+          }
+        ],
+        "/AwsText2Sql-DbStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/AwsText2Sql-DbStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "AwsText2Sql-DbStack"
+    },
+    "AwsText2Sql-AgentStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "AwsText2Sql-AgentStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "AwsText2Sql-AgentStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://046162611733/us-east-1",
+      "properties": {
+        "templateFile": "AwsText2Sql-AgentStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::046162611733:role/cdk-hnb659fds-deploy-role-046162611733-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::046162611733:role/cdk-hnb659fds-cfn-exec-role-046162611733-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-046162611733-us-east-1/57bcc8e71f844aa2c9e40ade0b242095d10a8ae493b54a6f29685bd87116aa26.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "AwsText2Sql-AgentStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::046162611733:role/cdk-hnb659fds-lookup-role-046162611733-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "AwsText2Sql-DbStack",
+        "AwsText2Sql-AgentStack.assets"
+      ],
+      "metadata": {
+        "/AwsText2Sql-AgentStack/LambdaPowertoolsLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaPowertoolsLayer733361E9"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/PydanticLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PydanticLayer850E8E7B"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/AthenaCommonLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaCommonLayerE6CEB8DD"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/DynamicAgent/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamicAgentRoleA8887E39"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/DynamicAgent/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamicAgentRoleDefaultPolicyB78B529B"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/DynamicAgent/AgentResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamicAgentAgentResourceECEA3023"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/AthenaSchemaReaderRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaSchemaReaderRole40751020"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/AthenaSchemaReaderRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaSchemaReaderRoleDefaultPolicyCC69F327"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/AthenaSchemaReaderLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaSchemaReaderLambda7F1C5EBE"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/AthenaSchemaReaderLambda/LambdaInvocationPolicy-c879dabbc25bda4c": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaSchemaReaderLambdaLambdaInvocationPolicyc879dabbc25bda4c79E221F9"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/AthenaQueryLambdaDLQ/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaQueryLambdaDLQ40E6C2A1"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/AthenaQueryLambdaDLQ/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaQueryLambdaDLQPolicyA676F13C"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/AthenaQueryLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaQueryLambdaRoleE7B101EC"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/AthenaQueryLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaQueryLambdaRoleDefaultPolicyAD553054"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/AthenaQueryLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaQueryLambda5FEAA2E2"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/AthenaQueryLambda/LambdaInvocationPolicy-c879dabbc25bda4c": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AthenaQueryLambdaLambdaInvocationPolicyc879dabbc25bda4c477F3091"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/AwsText2Sql-AgentStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "AwsText2Sql-AgentStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

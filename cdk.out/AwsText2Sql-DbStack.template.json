@@ -1,0 +1,2501 @@
+{
+ "Metadata": {
+  "cdk_nag": {
+   "rules_to_suppress": [
+    {
+     "reason": "CDK generated custom Lambda function",
+     "id": "AwsSolutions-IAM4"
+    },
+    {
+     "reason": "CDK generated custom Lambda function",
+     "id": "AwsSolutions-IAM5"
+    },
+    {
+     "reason": "CDK generated custom Lambda function",
+     "id": "AwsSolutions-L1"
+    }
+   ]
+  }
+ },
+ "Resources": {
+  "AthenaDataBucketAE80E991": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "fraud-data-store-046162611733-us-east-1",
+    "LoggingConfiguration": {
+     "LogFilePrefix": "athena-data-bucket-logs/"
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:accounts:a0cb6fb2",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:bank_branches:9d40327b",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:card_transactions:5ce996a3",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:cards:547f742f",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:customers:13d7c701",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:devices:c72006ab",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:fraud_alerts:c03bf5ba",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:locations:d0650a25",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:merchants:178c379f",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:rules_engine:c4784490",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:suspicious_patterns:50ca25c5",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:transaction_history:09004fbf",
+      "Value": "true"
+     },
+     {
+      "Key": "aws-cdk:cr-owned:transactions:8c97b84e",
+      "Value": "true"
+     }
+    ],
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/AthenaDataBucket/Resource"
+   }
+  },
+  "AthenaDataBucketPolicyFF2050A6": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "AthenaDataBucketAE80E991",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "AthenaDataBucketAE80E991",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "s3:PutObject",
+       "Condition": {
+        "ArnLike": {
+         "aws:SourceArn": {
+          "Fn::GetAtt": [
+           "AthenaDataBucketAE80E991",
+           "Arn"
+          ]
+         }
+        },
+        "StringEquals": {
+         "aws:SourceAccount": "046162611733"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "logging.s3.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "AthenaDataBucketAE80E991",
+            "Arn"
+           ]
+          },
+          "/athena-data-bucket-logs/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:PutBucketPolicy"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "AthenaDataBucketAE80E991",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "AthenaDataBucketAE80E991",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/AthenaDataBucket/Policy/Resource"
+   }
+  },
+  "AthenaDataBucketAutoDeleteObjectsCustomResourceCD085CF6": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    }
+   },
+   "DependsOn": [
+    "AthenaDataBucketPolicyFF2050A6"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/AthenaDataBucket/AutoDeleteObjectsCustomResource/Default"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip"
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Lambda function for auto-deleting objects in ",
+       {
+        "Ref": "AthenaDataBucketAE80E991"
+       },
+       " S3 bucket."
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
+    "aws:asset:path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+    "aws:asset:property": "Code"
+   }
+  },
+  "AthenaOutputBucket826361ED": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "fraud-athena-output-046162611733-us-east-1",
+    "LoggingConfiguration": {
+     "LogFilePrefix": "athena-output-bucket-logs/"
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     }
+    ],
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/AthenaOutputBucket/Resource"
+   }
+  },
+  "AthenaOutputBucketPolicyFC31EEB8": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "AthenaOutputBucket826361ED"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "AthenaOutputBucket826361ED",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "AthenaOutputBucket826361ED",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "s3:PutObject",
+       "Condition": {
+        "ArnLike": {
+         "aws:SourceArn": {
+          "Fn::GetAtt": [
+           "AthenaOutputBucket826361ED",
+           "Arn"
+          ]
+         }
+        },
+        "StringEquals": {
+         "aws:SourceAccount": "046162611733"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "logging.s3.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "AthenaOutputBucket826361ED",
+            "Arn"
+           ]
+          },
+          "/athena-output-bucket-logs/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:PutBucketPolicy"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "AthenaOutputBucket826361ED",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "AthenaOutputBucket826361ED",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/AthenaOutputBucket/Policy/Resource"
+   }
+  },
+  "AthenaOutputBucketAutoDeleteObjectsCustomResource6478248F": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "AthenaOutputBucket826361ED"
+    }
+   },
+   "DependsOn": [
+    "AthenaOutputBucketPolicyFC31EEB8"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/AthenaOutputBucket/AutoDeleteObjectsCustomResource/Default"
+   }
+  },
+  "DeployaccountsSampleTableAwsCliLayer6190E2AE": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeployaccountsSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeployaccountsSampleTableCustomResourceA510AE91": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "22bfc18603d13bdbd6f1fa27c1935b6e2129d24c8fe10c78fab3955a33b6770c.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "accounts",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeployaccountsSampleTable/CustomResource/Default"
+   }
+  },
+  "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource"
+   }
+  },
+  "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        "arn:aws:s3:::cdk-hnb659fds-assets-046162611733-us-east-1",
+        "arn:aws:s3:::cdk-hnb659fds-assets-046162611733-us-east-1/*"
+       ]
+      },
+      {
+       "Action": [
+        "s3:Abort*",
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "AthenaDataBucketAE80E991",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "AthenaDataBucketAE80E991",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF",
+    "Roles": [
+     {
+      "Ref": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "c6358465bf49dfae556bb430bf9c81fa578c221b82c308e3707901b1dd654762.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "AWS_CA_BUNDLE": "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
+     }
+    },
+    "Handler": "index.handler",
+    "Layers": [
+     {
+      "Ref": "DeployaccountsSampleTableAwsCliLayer6190E2AE"
+     }
+    ],
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF",
+    "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource",
+    "aws:asset:path": "asset.c6358465bf49dfae556bb430bf9c81fa578c221b82c308e3707901b1dd654762",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "DeploybankbranchesSampleTableAwsCliLayerC73A46B8": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploybankbranchesSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeploybankbranchesSampleTableCustomResource58F7527E": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "8bf98fd8c07bbffa6bd0c50e8891edd11180dc16ed86153cbd1308a6cda1622d.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "bank_branches",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploybankbranchesSampleTable/CustomResource/Default"
+   }
+  },
+  "DeploycardtransactionsSampleTableAwsCliLayerEBC64C2A": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploycardtransactionsSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeploycardtransactionsSampleTableCustomResource063E38B6": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "ae69f14a1786974d24a52c0b74ff62eed0b4c3e37af567230080202ca9f1885a.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "card_transactions",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploycardtransactionsSampleTable/CustomResource/Default"
+   }
+  },
+  "DeploycardsSampleTableAwsCliLayerE864F1E0": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploycardsSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeploycardsSampleTableCustomResource6AF9105C": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "2ada037e7a90e55a62bb37936cfdfb9af4143e1b4bb14f7fe3af17898c9f0380.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "cards",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploycardsSampleTable/CustomResource/Default"
+   }
+  },
+  "DeploycustomersSampleTableAwsCliLayerC96C80E1": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploycustomersSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeploycustomersSampleTableCustomResourceB8CBDF12": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "d9b702544ef5874ee9516bfeebd9547807cb0f6f99c60fad581ff2737b4a9f63.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "customers",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploycustomersSampleTable/CustomResource/Default"
+   }
+  },
+  "DeploydevicesSampleTableAwsCliLayer0B496197": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploydevicesSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeploydevicesSampleTableCustomResource53B92A2E": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "87c7511770b5f9fa5a112f982151aa996cdffd7bb233b842b5846c906f01d2dc.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "devices",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploydevicesSampleTable/CustomResource/Default"
+   }
+  },
+  "DeployfraudalertsSampleTableAwsCliLayer13A01418": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeployfraudalertsSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeployfraudalertsSampleTableCustomResource4D7C86AB": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "d219acce086413e5f7a1acf656d41c2e172060f48e7ab60712cf0756caf042ee.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "fraud_alerts",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeployfraudalertsSampleTable/CustomResource/Default"
+   }
+  },
+  "DeploylocationsSampleTableAwsCliLayerBF6DFFC8": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploylocationsSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeploylocationsSampleTableCustomResource6F954DC5": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "fead40848fb5a7825c813c06274cf4057ea11ea921407dd85fcf7d0de7da6c15.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "locations",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploylocationsSampleTable/CustomResource/Default"
+   }
+  },
+  "DeploymerchantsSampleTableAwsCliLayer392072C2": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploymerchantsSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeploymerchantsSampleTableCustomResource3610B671": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "b3dac470a553c5c8d0eee2159cd56eddab8a14b64568e3cf944e033135c4d2a6.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "merchants",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploymerchantsSampleTable/CustomResource/Default"
+   }
+  },
+  "DeployrulesengineSampleTableAwsCliLayer2DF33BC0": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeployrulesengineSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeployrulesengineSampleTableCustomResource6936D9B3": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "ce245c67bd69fd6201d75c248ef1e03c110be715e3277945b93cc2a3bae35d12.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "rules_engine",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeployrulesengineSampleTable/CustomResource/Default"
+   }
+  },
+  "DeploysuspiciouspatternsSampleTableAwsCliLayerB751BB62": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploysuspiciouspatternsSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeploysuspiciouspatternsSampleTableCustomResource8765498C": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "2a286be5868bb6f963d4edd79374dd2f9787c1167a64141dde39d4818518548b.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "suspicious_patterns",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploysuspiciouspatternsSampleTable/CustomResource/Default"
+   }
+  },
+  "DeploytransactionhistorySampleTableAwsCliLayer77A13D7A": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploytransactionhistorySampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeploytransactionhistorySampleTableCustomResource15EF7C98": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "51e7b0bee579693310bb514667015b054f6caca2f1df116649ebb5c16b6d8bf7.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "transaction_history",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploytransactionhistorySampleTable/CustomResource/Default"
+   }
+  },
+  "DeploytransactionsSampleTableAwsCliLayer453DF68B": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-046162611733-us-east-1",
+     "S3Key": "3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip"
+    },
+    "Description": "/opt/awscli/aws"
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploytransactionsSampleTable/AwsCliLayer/Resource",
+    "aws:asset:path": "asset.3ec63c94c6b53a6997f63c3f6e780c0c4da7e541c316938fc6681d96f76b30d6.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "DeploytransactionsSampleTableCustomResourceE6EE784E": {
+   "Type": "Custom::CDKBucketDeployment",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+      "Arn"
+     ]
+    },
+    "SourceBucketNames": [
+     "cdk-hnb659fds-assets-046162611733-us-east-1"
+    ],
+    "SourceObjectKeys": [
+     "2298335676bc032122c09ae8bfeb0da57d0d96aae88c3e28cd6640f93fbdbf84.zip"
+    ],
+    "DestinationBucketName": {
+     "Ref": "AthenaDataBucketAE80E991"
+    },
+    "DestinationBucketKeyPrefix": "transactions",
+    "Prune": true,
+    "OutputObjectKeys": true
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/DeploytransactionsSampleTable/CustomResource/Default"
+   }
+  },
+  "AthenaDatabase": {
+   "Type": "AWS::Glue::Database",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseInput": {
+     "Name": "fraud_data"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/AthenaDatabase"
+   }
+  },
+  "customers": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "customers",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each customer. Serves as the primary key for this table.",
+        "Name": "customer_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The first name of the customer.",
+        "Name": "first_name",
+        "Type": "string"
+       },
+       {
+        "Comment": "The last name of the customer.",
+        "Name": "last_name",
+        "Type": "string"
+       },
+       {
+        "Comment": "The email address of the customer.",
+        "Name": "email",
+        "Type": "string"
+       },
+       {
+        "Comment": "The phone number of the customer.",
+        "Name": "phone",
+        "Type": "string"
+       },
+       {
+        "Comment": "The date of birth of the customer.",
+        "Name": "date_of_birth",
+        "Type": "string"
+       },
+       {
+        "Comment": "The street address of the customer.",
+        "Name": "address",
+        "Type": "string"
+       },
+       {
+        "Comment": "The city where the customer resides.",
+        "Name": "city",
+        "Type": "string"
+       },
+       {
+        "Comment": "The state where the customer resides.",
+        "Name": "state",
+        "Type": "string"
+       },
+       {
+        "Comment": "The postal code for the customer's address.",
+        "Name": "zipcode",
+        "Type": "string"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/customers"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/customers"
+   }
+  },
+  "accounts": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "accounts",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each bank account. Serves as the primary key for this table.",
+        "Name": "account_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The customer who owns the bank account. Acts as a foreign key referencing the 'Customers' table.",
+        "Name": "customer_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The type of the bank account (e.g., savings, checking).",
+        "Name": "account_type",
+        "Type": "string"
+       },
+       {
+        "Comment": "The current status of the account (e.g., active, closed).",
+        "Name": "account_status",
+        "Type": "string"
+       },
+       {
+        "Comment": "The date when the bank account was created.",
+        "Name": "created_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "The date when the bank account was closed, if applicable (nullable).",
+        "Name": "closed_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "The current balance in the bank account.",
+        "Name": "current_balance",
+        "Type": "float"
+       },
+       {
+        "Comment": "The bank branch where the account is managed. Acts as a foreign key referencing the 'Bank_Branches' table.",
+        "Name": "branch_id",
+        "Type": "int"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/accounts"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/accounts"
+   }
+  },
+  "transactions": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "transactions",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each transaction. Serves as the primary key for this table.",
+        "Name": "transaction_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The bank account associated with this transaction. Acts as a foreign key referencing the 'Accounts' table.",
+        "Name": "account_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The type of transaction (e.g., withdrawal, deposit).",
+        "Name": "transaction_type",
+        "Type": "string"
+       },
+       {
+        "Comment": "The amount of money involved in the transaction.",
+        "Name": "amount",
+        "Type": "float"
+       },
+       {
+        "Comment": "The date when the transaction occurred.",
+        "Name": "transaction_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "The merchant involved in the transaction. Acts as a foreign key referencing the 'Merchants' table.",
+        "Name": "merchant_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The city where the transaction took place.",
+        "Name": "city",
+        "Type": "string"
+       },
+       {
+        "Comment": "The state where the transaction took place.",
+        "Name": "state",
+        "Type": "string"
+       },
+       {
+        "Comment": "The currency used in the transaction.",
+        "Name": "currency",
+        "Type": "string"
+       },
+       {
+        "Comment": "The current status of the transaction (e.g., completed, pending).",
+        "Name": "transaction_status",
+        "Type": "string"
+       },
+       {
+        "Comment": "A flag indicating if the transaction is suspected to be fraudulent.",
+        "Name": "fraud_flag",
+        "Type": "boolean"
+       },
+       {
+        "Comment": "The entity that flagged the transaction as potentially fraudulent.",
+        "Name": "flagged_by",
+        "Type": "string"
+       },
+       {
+        "Comment": "The reason for flagging the transaction as potentially fraudulent.",
+        "Name": "fraud_reason",
+        "Type": "string"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/transactions"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/transactions"
+   }
+  },
+  "merchants": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "merchants",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each merchant. Serves as the primary key for this table.",
+        "Name": "merchant_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The name of the merchant.",
+        "Name": "merchant_name",
+        "Type": "string"
+       },
+       {
+        "Comment": "The category or type of goods or services the merchant provides.",
+        "Name": "category",
+        "Type": "string"
+       },
+       {
+        "Comment": "The street address of the merchant's location.",
+        "Name": "address",
+        "Type": "string"
+       },
+       {
+        "Comment": "The city where the merchant is located.",
+        "Name": "city",
+        "Type": "string"
+       },
+       {
+        "Comment": "The state where the merchant is located.",
+        "Name": "state",
+        "Type": "string"
+       },
+       {
+        "Comment": "The postal code for the merchant's location.",
+        "Name": "zipcode",
+        "Type": "string"
+       },
+       {
+        "Comment": "The country where the merchant is located.",
+        "Name": "country",
+        "Type": "string"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/merchants"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/merchants"
+   }
+  },
+  "fraudalerts": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "fraud_alerts",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each fraud alert. Serves as the primary key for this table.",
+        "Name": "alert_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The transaction associated with the fraud alert. Acts as a foreign key referencing the 'Transactions' table.",
+        "Name": "transaction_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The type of fraud alert (e.g., unusual transaction, high transaction amount).",
+        "Name": "alert_type",
+        "Type": "string"
+       },
+       {
+        "Comment": "The entity that generated the fraud alert.",
+        "Name": "generated_by",
+        "Type": "string"
+       },
+       {
+        "Comment": "The date when the fraud alert was generated.",
+        "Name": "alert_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "The current status of the fraud alert (e.g., open, resolved).",
+        "Name": "alert_status",
+        "Type": "string"
+       },
+       {
+        "Comment": "The severity level of the fraud alert (e.g., low, high).",
+        "Name": "severity_level",
+        "Type": "string"
+       },
+       {
+        "Comment": "Additional notes or details about the fraud alert.",
+        "Name": "notes",
+        "Type": "string"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/fraud_alerts"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/fraud_alerts"
+   }
+  },
+  "rulesengine": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "rules_engine",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each fraud detection rule. Serves as the primary key for this table.",
+        "Name": "rule_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The name of the fraud detection rule.",
+        "Name": "rule_name",
+        "Type": "string"
+       },
+       {
+        "Comment": "A detailed description of the fraud detection rule.",
+        "Name": "rule_description",
+        "Type": "string"
+       },
+       {
+        "Comment": "The severity level assigned to the fraud detection rule.",
+        "Name": "severity_level",
+        "Type": "string"
+       },
+       {
+        "Comment": "The date when the fraud detection rule was created.",
+        "Name": "created_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "The date when the fraud detection rule was last modified.",
+        "Name": "modified_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "Indicates whether the fraud detection rule is currently active.",
+        "Name": "is_active",
+        "Type": "boolean"
+       },
+       {
+        "Comment": "The number of times the rule has triggered on transactions.",
+        "Name": "hit_count",
+        "Type": "int"
+       },
+       {
+        "Comment": "The rate of false positives for this rule.",
+        "Name": "false_positive_rate",
+        "Type": "float"
+       },
+       {
+        "Comment": "The date when the rule was last reviewed.",
+        "Name": "last_reviewed",
+        "Type": "string"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/rules_engine"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/rules_engine"
+   }
+  },
+  "devices": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "devices",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each device. Serves as the primary key for this table.",
+        "Name": "device_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The customer who owns the device. Acts as a foreign key referencing the 'Customers' table.",
+        "Name": "customer_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The type of device (e.g., smartphone, laptop).",
+        "Name": "device_type",
+        "Type": "string"
+       },
+       {
+        "Comment": "The operating system of the device.",
+        "Name": "device_os",
+        "Type": "string"
+       },
+       {
+        "Comment": "The model of the device.",
+        "Name": "device_model",
+        "Type": "string"
+       },
+       {
+        "Comment": "The last login date of the device.",
+        "Name": "last_login_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "A flag indicating if the device is blacklisted.",
+        "Name": "is_blacklisted",
+        "Type": "boolean"
+       },
+       {
+        "Comment": "The fraud score associated with the device.",
+        "Name": "fraud_score",
+        "Type": "float"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/devices"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/devices"
+   }
+  },
+  "locations": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "locations",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each location. Serves as the primary key for this table.",
+        "Name": "location_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The transaction associated with the location. Acts as a foreign key referencing the 'Transactions' table.",
+        "Name": "transaction_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The country where the transaction occurred.",
+        "Name": "country",
+        "Type": "string"
+       },
+       {
+        "Comment": "The city where the transaction occurred.",
+        "Name": "city",
+        "Type": "string"
+       },
+       {
+        "Comment": "The state where the transaction occurred.",
+        "Name": "state",
+        "Type": "string"
+       },
+       {
+        "Comment": "The postal code for the transaction location.",
+        "Name": "zipcode",
+        "Type": "string"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/locations"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/locations"
+   }
+  },
+  "transactionhistory": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "transaction_history",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each transaction history record. Serves as the primary key for this table.",
+        "Name": "history_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The transaction associated with the history. Acts as a foreign key referencing the 'Transactions' table.",
+        "Name": "transaction_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The balance before the transaction occurred.",
+        "Name": "previous_balance",
+        "Type": "float"
+       },
+       {
+        "Comment": "The balance after the transaction occurred.",
+        "Name": "new_balance",
+        "Type": "float"
+       },
+       {
+        "Comment": "The date when the transaction occurred.",
+        "Name": "transaction_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "The time when the transaction occurred.",
+        "Name": "transaction_time",
+        "Type": "string"
+       },
+       {
+        "Comment": "A flag indicating if the transaction is suspected to be fraudulent.",
+        "Name": "is_fraud",
+        "Type": "boolean"
+       },
+       {
+        "Comment": "The level of fraud check conducted on the transaction.",
+        "Name": "fraud_check_level",
+        "Type": "string"
+       },
+       {
+        "Comment": "The entity that processed the transaction.",
+        "Name": "processed_by",
+        "Type": "string"
+       },
+       {
+        "Comment": "The status of the review process for the transaction.",
+        "Name": "review_status",
+        "Type": "string"
+       },
+       {
+        "Comment": "The date when the transaction was reviewed, if applicable (nullable).",
+        "Name": "review_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "Any comments provided during the review process, if applicable (nullable).",
+        "Name": "reviewer_comments",
+        "Type": "string"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/transaction_history"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/transaction_history"
+   }
+  },
+  "suspiciouspatterns": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "suspicious_patterns",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each suspicious pattern. Serves as the primary key for this table.",
+        "Name": "pattern_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The transaction associated with the suspicious pattern. Acts as a foreign key referencing the 'Transactions' table.",
+        "Name": "transaction_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The type of suspicious pattern detected.",
+        "Name": "pattern_type",
+        "Type": "string"
+       },
+       {
+        "Comment": "A detailed description of the suspicious pattern.",
+        "Name": "pattern_description",
+        "Type": "string"
+       },
+       {
+        "Comment": "The severity level of the suspicious pattern.",
+        "Name": "severity_level",
+        "Type": "string"
+       },
+       {
+        "Comment": "The date when the suspicious pattern was detected.",
+        "Name": "date_detected",
+        "Type": "string"
+       },
+       {
+        "Comment": "A flag indicating if the suspicious pattern is resolved.",
+        "Name": "is_resolved",
+        "Type": "boolean"
+       },
+       {
+        "Comment": "The date when the suspicious pattern was resolved, if applicable (nullable).",
+        "Name": "resolved_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "The entity that resolved the suspicious pattern, if applicable.",
+        "Name": "resolved_by",
+        "Type": "string"
+       },
+       {
+        "Comment": "Any comments provided regarding the suspicious pattern, if applicable (nullable).",
+        "Name": "comments",
+        "Type": "string"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/suspicious_patterns"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/suspicious_patterns"
+   }
+  },
+  "bankbranches": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "bank_branches",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each bank branch. Serves as the primary key for this table.",
+        "Name": "branch_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The name of the bank branch.",
+        "Name": "branch_name",
+        "Type": "string"
+       },
+       {
+        "Comment": "The street address of the bank branch.",
+        "Name": "address",
+        "Type": "string"
+       },
+       {
+        "Comment": "The city where the bank branch is located.",
+        "Name": "city",
+        "Type": "string"
+       },
+       {
+        "Comment": "The state where the bank branch is located.",
+        "Name": "state",
+        "Type": "string"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/bank_branches"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/bank_branches"
+   }
+  },
+  "cards": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "cards",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each card. Serves as the primary key for this table.",
+        "Name": "card_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The customer who owns the card. Acts as a foreign key referencing the 'Customers' table.",
+        "Name": "customer_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The masked or tokenized card number for security.",
+        "Name": "card_number",
+        "Type": "string"
+       },
+       {
+        "Comment": "The type of card (e.g., debit, credit).",
+        "Name": "card_type",
+        "Type": "string"
+       },
+       {
+        "Comment": "The expiration date of the card.",
+        "Name": "expiration_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "The CVV code for the card.",
+        "Name": "cvv",
+        "Type": "string"
+       },
+       {
+        "Comment": "The issue date of the card.",
+        "Name": "issue_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "The status of the card (e.g., active, blocked).",
+        "Name": "status",
+        "Type": "string"
+       },
+       {
+        "Comment": "The last date the card was used.",
+        "Name": "last_used_date",
+        "Type": "string"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/cards"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/cards"
+   }
+  },
+  "cardtransactions": {
+   "Type": "AWS::Glue::Table",
+   "Properties": {
+    "CatalogId": "046162611733",
+    "DatabaseName": {
+     "Ref": "AthenaDatabase"
+    },
+    "TableInput": {
+     "Name": "card_transactions",
+     "Parameters": {
+      "skip.header.line.count": "1"
+     },
+     "StorageDescriptor": {
+      "Columns": [
+       {
+        "Comment": "A unique identifier for each card transaction. Serves as the primary key for this table.",
+        "Name": "card_transaction_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The card associated with the transaction. Acts as a foreign key referencing the 'Cards' table.",
+        "Name": "card_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The transaction associated with the card transaction. Acts as a foreign key referencing the 'Transactions' table.",
+        "Name": "transaction_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The type of card transaction (e.g., purchase, cash withdrawal).",
+        "Name": "transaction_type",
+        "Type": "string"
+       },
+       {
+        "Comment": "The amount of money involved in the card transaction.",
+        "Name": "amount",
+        "Type": "float"
+       },
+       {
+        "Comment": "The date when the card transaction occurred.",
+        "Name": "transaction_date",
+        "Type": "string"
+       },
+       {
+        "Comment": "The merchant involved in the card transaction. Acts as a foreign key referencing the 'Merchants' table.",
+        "Name": "merchant_id",
+        "Type": "int"
+       },
+       {
+        "Comment": "The location where the card transaction occurred.",
+        "Name": "location",
+        "Type": "string"
+       },
+       {
+        "Comment": "The currency used in the card transaction.",
+        "Name": "currency",
+        "Type": "string"
+       },
+       {
+        "Comment": "The status of the card transaction (e.g., completed, pending).",
+        "Name": "transaction_status",
+        "Type": "string"
+       },
+       {
+        "Comment": "A flag indicating if the card transaction is suspected to be fraudulent.",
+        "Name": "fraud_flag",
+        "Type": "boolean"
+       },
+       {
+        "Comment": "The entity that flagged the card transaction as potentially fraudulent.",
+        "Name": "flagged_by",
+        "Type": "string"
+       },
+       {
+        "Comment": "The reason for flagging the card transaction as potentially fraudulent.",
+        "Name": "fraud_reason",
+        "Type": "string"
+       }
+      ],
+      "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+      "Location": {
+       "Fn::Join": [
+        "",
+        [
+         "s3://",
+         {
+          "Ref": "AthenaDataBucketAE80E991"
+         },
+         "/card_transactions"
+        ]
+       ]
+      },
+      "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+      "SerdeInfo": {
+       "Parameters": {
+        "field.delim": ",",
+        "line.delim": "\n"
+       },
+       "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      }
+     },
+     "TableType": "EXTERNAL_TABLE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/card_transactions"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VRTW+DMAz9LbuHrB+HaceWaqdJq2DaFZlgUEpIqjgpQlH++wRBdDu952fLfk8+8P3bO9+9wEiZaPpMyZqH0oHoGYxUBTrycPaiR8fyVq8swdUoKaanvNapOANhZHSsQoN3ZaYBteOpddkEBkToiJ9miEzBUDfAQ97qT5jQ/qAlaTQrpe4UOqM/vBZuVjaSt5sYmYSBh8IonOUFnxYTi6xTHpcLF3BQAy2z31ArjJHlnpwZCiTjrUhbNv6vdbXmIRu0c0q2uC8ddFJ3a4ZKzf4rGEkoyU8j5Uoukdjf5V/e3b2LTJsG+Y1eH4cd38/PuJGUmfXayQF5kfAX0R0PGakBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "AwsText2Sql-DbStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "AthenaDataBucketName": {
+   "Description": "Athena Data Bucket Name",
+   "Value": {
+    "Ref": "AthenaDataBucketAE80E991"
+   }
+  },
+  "AthenaOutputBucketName": {
+   "Description": "Athena Output Bucket Name",
+   "Value": {
+    "Ref": "AthenaOutputBucket826361ED"
+   }
+  },
+  "AthenaDatabaseName": {
+   "Description": "Athena Database Name",
+   "Value": {
+    "Ref": "AthenaDatabase"
+   }
+  },
+  "ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24": {
+   "Value": {
+    "Fn::GetAtt": [
+     "AthenaDataBucketAE80E991",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaDataBucketAE80E991Arn540BDF24"
+   }
+  },
+  "ExportsOutputFnGetAttAthenaOutputBucket826361EDArn1256CED7": {
+   "Value": {
+    "Fn::GetAtt": [
+     "AthenaOutputBucket826361ED",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "AwsText2Sql-DbStack:ExportsOutputFnGetAttAthenaOutputBucket826361EDArn1256CED7"
+   }
+  },
+  "ExportsOutputRefAthenaOutputBucket826361ED1BD1E59B": {
+   "Value": {
+    "Ref": "AthenaOutputBucket826361ED"
+   },
+   "Export": {
+    "Name": "AwsText2Sql-DbStack:ExportsOutputRefAthenaOutputBucket826361ED1BD1E59B"
+   }
+  },
+  "ExportsOutputRefAthenaDataBucketAE80E99189B3BFB1": {
+   "Value": {
+    "Ref": "AthenaDataBucketAE80E991"
+   },
+   "Export": {
+    "Name": "AwsText2Sql-DbStack:ExportsOutputRefAthenaDataBucketAE80E99189B3BFB1"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

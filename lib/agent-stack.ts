@@ -301,5 +301,14 @@ export class AgentStack extends Stack {
       )
     })
     dynamicAgent.addActionGroup(athenaSchemaReaderActionGroup);
+
+    dynamicAgent.role.addToPrincipalPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ["bedrock:InvokeModel"],
+      resources: [
+        "arn:aws:bedrock:*::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0"
+      ]
+    }));
+    
   }
 }
